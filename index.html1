@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>俺の家計簿</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+<h1>💰 俺の家計簿</h1>
+
+
+<!-- ホーム -->
+
+<section id="home">
+
+
+<div class="card main-card">
+
+<h2>💎 総資産</h2>
+
+<p id="total">
+0円
+</p>
+
+</div>
+
+
+
+<div class="balance-container">
+
+
+<div class="card small-card">
+
+<h2>💵 現金</h2>
+
+<p id="cash">
+0円
+</p>
+
+</div>
+
+
+
+<div class="card small-card">
+
+<h2>🚉 Suica</h2>
+
+<p id="suica">
+0円
+</p>
+
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+<h2>📌 今月あと使える</h2>
+
+<p id="limit">
+0円
+</p>
+
+</div>
+
+
+</section>
+
+
+
+<!-- 記録 -->
+
+<section id="record">
+
+
+<div class="card">
+
+<h2>📝 記録追加</h2>
+
+
+<select id="type">
+
+<option value="expense">
+💸 支出
+</option>
+
+<option value="income">
+💴 収入
+</option>
+
+<option value="charge">
+🚉 Suicaチャージ
+</option>
+
+</select>
+
+
+
+<input id="amount"
+type="number"
+placeholder="金額">
+
+
+
+<select id="category">
+
+<option>🍚 食費</option>
+
+<option>👕 服</option>
+
+<option>🚃 交通費</option>
+
+<option>🎮 遊び</option>
+
+<option>💈 美容</option>
+
+<option>📦 その他</option>
+
+</select>
+
+
+
+<input id="memo"
+placeholder="メモ">
+
+
+
+<button onclick="saveRecord()">
+保存
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- 分析 -->
+
+<section id="analysis">
+
+
+<div class="card">
+
+<h2>📊 分析</h2>
+
+<div id="ranking"></div>
+
+</div>
+
+
+</section>
+
+
+
+<!-- 履歴 -->
+
+<section id="history">
+
+
+<div class="card">
+
+<h2>📋 履歴</h2>
+
+
+<input id="searchInput"
+placeholder="履歴検索">
+
+
+<p id="searchTotal"></p>
+
+
+<div id="historyList"></div>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- 下メニュー -->
+
+<nav class="bottom-nav">
+
+
+<button onclick="goHome()">
+🏠
+</button>
+
+
+<button onclick="goRecord()">
+➕
+</button>
+
+
+<button onclick="goAnalysis()">
+📊
+</button>
+
+
+<button onclick="goHistory()">
+📋
+</button>
+
+
+</nav>
+
+
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/finance.js"></script>
+<script src="js/history.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+
+
+</body>
+
+</html>
