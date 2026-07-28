@@ -17,5 +17,8 @@ window.onload = function(){
 
     showHistory();
 
+showRanking();
+
+updateChart();
 
 };
