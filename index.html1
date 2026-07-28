@@ -159,7 +159,7 @@ placeholder="メモ">
 <h2>📊 分析</h2>
 
 <div id="ranking"></div>
-
+<canvas id="expenseChart"></canvas>
 </div>
 
 
