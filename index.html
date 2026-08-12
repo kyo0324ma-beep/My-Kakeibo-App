@@ -98,6 +98,18 @@ header p {
   background: #ffebee;
 }
 
+.bank {
+  background: #eef2ff;
+}
+
+.cash {
+  background: #f0fdf4;
+}
+
+.suica-box {
+  background: #f3f4f6;
+}
+
 label {
   display: block;
   font-size: 13px;
@@ -322,6 +334,33 @@ canvas {
   background: #fff7f7;
 }
 
+.asset-description {
+  font-size: 12px;
+  color: #777;
+  line-height: 1.6;
+  margin-top: 5px;
+}
+
+.asset-total {
+  margin-top: 15px;
+  padding: 14px;
+  background: #f9fafb;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.asset-total span {
+  display: block;
+  font-size: 12px;
+  color: #777;
+}
+
+.asset-total strong {
+  display: block;
+  font-size: 23px;
+  margin-top: 4px;
+}
+
 @media (max-width: 600px) {
   .summary {
     grid-template-columns: 1fr 1fr;
@@ -363,13 +402,23 @@ canvas {
         <strong id="usableMoney">¥0</strong>
       </div>
 
+      <div class="summary-box bank">
+        <span>🏦 口座のお金</span>
+        <strong id="bankMoney">¥0</strong>
+      </div>
+
+      <div class="summary-box cash">
+        <span>💵 手持ち現金</span>
+        <strong id="cashMoney">¥0</strong>
+      </div>
+
       <div class="summary-box savings">
-        <span>貯金</span>
+        <span>💰 貯金</span>
         <strong id="savingMoney">¥0</strong>
       </div>
 
-      <div class="summary-box">
-        <span>Suica残高</span>
+      <div class="summary-box suica-box">
+        <span>🚃 Suica残高</span>
         <strong id="suicaBalance">¥0</strong>
       </div>
 
@@ -387,12 +436,63 @@ canvas {
   </div>
 
 
+  <!-- 資産入力 -->
+  <div class="card">
+
+    <h2>🏦 資産を管理</h2>
+
+    <p class="asset-description">
+      現在持っているお金をそれぞれ入力してください。
+      ここで設定した金額が現在の残高として表示されます。
+    </p>
+
+    <label>🏦 口座のお金</label>
+    <input
+      id="bankInput"
+      type="number"
+      min="0"
+      placeholder="例：50000"
+    >
+
+    <label>💵 現金で持っているお金</label>
+    <input
+      id="cashInput"
+      type="number"
+      min="0"
+      placeholder="例：10000"
+    >
+
+    <label>💰 貯金額</label>
+    <input
+      id="savingsInput"
+      type="number"
+      min="0"
+      placeholder="例：80000"
+    >
+
+    <button class="green" onclick="saveAssetBalances()">
+      資産残高を保存
+    </button>
+
+    <div class="asset-total">
+      <span>普通に使うお金（口座＋現金）</span>
+      <strong id="assetUsablePreview">¥0</strong>
+    </div>
+
+  </div>
+
+
   <!-- 貯金目標 -->
   <div class="card">
     <h2>🎯 貯金目標</h2>
 
     <label>目標金額</label>
-    <input id="savingGoal" type="number" placeholder="例：100000">
+    <input
+      id="savingGoal"
+      type="number"
+      min="0"
+      placeholder="例：100000"
+    >
 
     <button onclick="saveGoal()">目標を保存</button>
 
@@ -412,13 +512,20 @@ canvas {
     <h2>➕ お金を登録</h2>
 
     <div class="tabs">
-      <button id="incomeTab" class="active" onclick="switchType('income')">
+
+      <button
+        id="incomeTab"
+        class="active"
+        onclick="switchType('income')">
         収入
       </button>
 
-      <button id="expenseTab" onclick="switchType('expense')">
+      <button
+        id="expenseTab"
+        onclick="switchType('expense')">
         支出
       </button>
+
     </div>
 
     <div class="form-grid">
@@ -430,19 +537,26 @@ canvas {
 
       <div>
         <label>金額</label>
-        <input id="amount" type="number" placeholder="例：5000">
+        <input
+          id="amount"
+          type="number"
+          placeholder="例：5000"
+        >
       </div>
 
     </div>
 
     <label>カテゴリ</label>
 
-    <select id="category">
-    </select>
+    <select id="category"></select>
 
     <label>メモ</label>
 
-    <input id="memo" type="text" placeholder="例：サイゼ給料">
+    <input
+      id="memo"
+      type="text"
+      placeholder="例：サイゼ給料"
+    >
 
     <button onclick="addTransaction()">
       登録する
@@ -460,12 +574,22 @@ canvas {
 
       <div>
         <label>給料日</label>
-        <input id="salaryDay" type="number" min="1" max="31" placeholder="例：25">
+        <input
+          id="salaryDay"
+          type="number"
+          min="1"
+          max="31"
+          placeholder="例：25"
+        >
       </div>
 
       <div>
         <label>通常の給料</label>
-        <input id="salaryAmount" type="number" placeholder="例：50000">
+        <input
+          id="salaryAmount"
+          type="number"
+          placeholder="例：50000"
+        >
       </div>
 
     </div>
@@ -480,9 +604,16 @@ canvas {
 
     <label>単発バイト収入</label>
 
-    <input id="singleAmount" type="number" placeholder="金額">
+    <input
+      id="singleAmount"
+      type="number"
+      placeholder="金額"
+    >
 
-    <input id="singleDate" type="date">
+    <input
+      id="singleDate"
+      type="date"
+    >
 
     <button class="blue" onclick="addSingleIncome()">
       単発バイトを登録
@@ -498,7 +629,12 @@ canvas {
 
     <label>現在のSuica残高</label>
 
-    <input id="suicaInput" type="number" placeholder="例：3000">
+    <input
+      id="suicaInput"
+      type="number"
+      min="0"
+      placeholder="例：3000"
+    >
 
     <button onclick="saveSuica()">
       Suica残高を保存
@@ -506,7 +642,11 @@ canvas {
 
     <label>Suicaへチャージ</label>
 
-    <input id="chargeAmount" type="number" placeholder="例：1000">
+    <input
+      id="chargeAmount"
+      type="number"
+      placeholder="例：1000"
+    >
 
     <button class="blue" onclick="chargeSuica()">
       チャージする
@@ -572,7 +712,11 @@ canvas {
 
     <h2>📊 今月の収支</h2>
 
-    <canvas id="chart" width="600" height="300"></canvas>
+    <canvas
+      id="chart"
+      width="600"
+      height="300">
+    </canvas>
 
   </div>
 
@@ -592,8 +736,8 @@ canvas {
       id="backupText"
       rows="6"
       style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;"
-      placeholder="バックアップしたデータをここに貼り付け"
-    ></textarea>
+      placeholder="バックアップしたデータをここに貼り付け">
+    </textarea>
 
     <button class="green" onclick="restoreData()">
       復元する
@@ -611,7 +755,10 @@ canvas {
       家計簿のデータをすべて削除します。
     </p>
 
-    <button class="delete" style="width:100%;padding:12px;" onclick="deleteAllData()">
+    <button
+      class="delete"
+      style="width:100%;padding:12px;"
+      onclick="deleteAllData()">
       すべてのデータを削除
     </button>
 
@@ -629,14 +776,36 @@ canvas {
 let transactions =
   JSON.parse(localStorage.getItem("pocketTransactions")) || [];
 
-let settings =
-  JSON.parse(localStorage.getItem("pocketSettings")) || {
-    savings: 0,
-    goal: 0,
-    salaryDay: "",
-    salaryAmount: 0,
-    suica: 0
-  };
+let savedSettings =
+  JSON.parse(localStorage.getItem("pocketSettings")) || {};
+
+/*
+  以前のデータをできるだけ引き継ぐ
+*/
+let settings = {
+
+  bank:
+    Number(savedSettings.bank || 0),
+
+  cash:
+    Number(savedSettings.cash || 0),
+
+  savings:
+    Number(savedSettings.savings || 0),
+
+  goal:
+    Number(savedSettings.goal || 0),
+
+  salaryDay:
+    savedSettings.salaryDay || "",
+
+  salaryAmount:
+    Number(savedSettings.salaryAmount || 0),
+
+  suica:
+    Number(savedSettings.suica || 0)
+
+};
 
 let currentType = "income";
 
@@ -659,6 +828,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("singleDate").value =
     formatDate(today);
 
+  document.getElementById("bankInput").value =
+    settings.bank || "";
+
+  document.getElementById("cashInput").value =
+    settings.cash || "";
+
+  document.getElementById("savingsInput").value =
+    settings.savings || "";
+
   document.getElementById("savingGoal").value =
     settings.goal || "";
 
@@ -667,6 +845,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("salaryAmount").value =
     settings.salaryAmount || "";
+
+  document.getElementById("suicaInput").value =
+    settings.suica || "";
 
   updateCategory();
 
@@ -702,9 +883,13 @@ function formatDate(date) {
 
   const y = date.getFullYear();
 
-  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const m =
+    String(date.getMonth() + 1)
+      .padStart(2, "0");
 
-  const d = String(date.getDate()).padStart(2, "0");
+  const d =
+    String(date.getDate())
+      .padStart(2, "0");
 
   return `${y}-${m}-${d}`;
 
@@ -718,7 +903,8 @@ function formatDate(date) {
 function yen(value) {
 
   return "¥" +
-    Number(value || 0).toLocaleString("ja-JP");
+    Number(value || 0)
+      .toLocaleString("ja-JP");
 
 }
 
@@ -732,10 +918,16 @@ function switchType(type) {
   currentType = type;
 
   document.getElementById("incomeTab")
-    .classList.toggle("active", type === "income");
+    .classList.toggle(
+      "active",
+      type === "income"
+    );
 
   document.getElementById("expenseTab")
-    .classList.toggle("active", type === "expense");
+    .classList.toggle(
+      "active",
+      type === "expense"
+    );
 
   updateCategory();
 
@@ -777,6 +969,53 @@ function updateCategory() {
 
 
 /* =========================
+   資産残高保存
+========================= */
+
+function saveAssetBalances() {
+
+  const bank =
+    Number(
+      document.getElementById("bankInput").value
+    );
+
+  const cash =
+    Number(
+      document.getElementById("cashInput").value
+    );
+
+  const savings =
+    Number(
+      document.getElementById("savingsInput").value
+    );
+
+  if (
+    bank < 0 ||
+    cash < 0 ||
+    savings < 0
+  ) {
+
+    alert("0円以上の金額を入力してください。");
+    return;
+
+  }
+
+  settings.bank = bank;
+
+  settings.cash = cash;
+
+  settings.savings = savings;
+
+  saveData();
+
+  renderAll();
+
+  alert("資産残高を保存しました。");
+
+}
+
+
+/* =========================
    取引追加
 ========================= */
 
@@ -786,13 +1025,16 @@ function addTransaction() {
     document.getElementById("date").value;
 
   const amount =
-    Number(document.getElementById("amount").value);
+    Number(
+      document.getElementById("amount").value
+    );
 
   const category =
     document.getElementById("category").value;
 
   const memo =
-    document.getElementById("memo").value.trim();
+    document.getElementById("memo")
+      .value.trim();
 
   if (!date) {
 
@@ -842,7 +1084,9 @@ function addTransaction() {
 function addSingleIncome() {
 
   const amount =
-    Number(document.getElementById("singleAmount").value);
+    Number(
+      document.getElementById("singleAmount").value
+    );
 
   const date =
     document.getElementById("singleDate").value;
@@ -850,6 +1094,13 @@ function addSingleIncome() {
   if (!amount || amount <= 0) {
 
     alert("金額を入力してください。");
+    return;
+
+  }
+
+  if (!date) {
+
+    alert("日付を入力してください。");
     return;
 
   }
@@ -886,7 +1137,9 @@ function addSingleIncome() {
 function deleteTransaction(id) {
 
   const target =
-    transactions.find(t => t.id === id);
+    transactions.find(
+      t => t.id === id
+    );
 
   if (!target) return;
 
@@ -899,7 +1152,9 @@ function deleteTransaction(id) {
   }
 
   transactions =
-    transactions.filter(t => t.id !== id);
+    transactions.filter(
+      t => t.id !== id
+    );
 
   saveData();
 
@@ -926,6 +1181,10 @@ function deleteAllData() {
 
   settings = {
 
+    bank: 0,
+
+    cash: 0,
+
     savings: 0,
 
     goal: 0,
@@ -939,6 +1198,20 @@ function deleteAllData() {
   };
 
   saveData();
+
+  document.getElementById("bankInput").value = "";
+
+  document.getElementById("cashInput").value = "";
+
+  document.getElementById("savingsInput").value = "";
+
+  document.getElementById("savingGoal").value = "";
+
+  document.getElementById("salaryDay").value = "";
+
+  document.getElementById("salaryAmount").value = "";
+
+  document.getElementById("suicaInput").value = "";
 
   renderAll();
 
@@ -954,7 +1227,9 @@ function deleteAllData() {
 function saveGoal() {
 
   const goal =
-    Number(document.getElementById("savingGoal").value);
+    Number(
+      document.getElementById("savingGoal").value
+    );
 
   if (goal < 0) return;
 
@@ -974,10 +1249,14 @@ function saveGoal() {
 function saveSalarySettings() {
 
   settings.salaryDay =
-    Number(document.getElementById("salaryDay").value);
+    Number(
+      document.getElementById("salaryDay").value
+    );
 
   settings.salaryAmount =
-    Number(document.getElementById("salaryAmount").value);
+    Number(
+      document.getElementById("salaryAmount").value
+    );
 
   saveData();
 
@@ -993,7 +1272,9 @@ function saveSalarySettings() {
 function saveSuica() {
 
   const value =
-    Number(document.getElementById("suicaInput").value);
+    Number(
+      document.getElementById("suicaInput").value
+    );
 
   if (value < 0) return;
 
@@ -1013,7 +1294,9 @@ function saveSuica() {
 function chargeSuica() {
 
   const amount =
-    Number(document.getElementById("chargeAmount").value);
+    Number(
+      document.getElementById("chargeAmount").value
+    );
 
   if (!amount || amount <= 0) {
 
@@ -1023,9 +1306,52 @@ function chargeSuica() {
   }
 
   /*
-    Suicaチャージは支出として扱う。
-    ただし「Suica残高」に同額を追加する。
+    普通に使うお金から減らす
   */
+
+  const usable =
+    Number(settings.bank || 0) +
+    Number(settings.cash || 0);
+
+  if (usable < amount) {
+
+    alert(
+      "普通に使うお金が足りません。"
+    );
+
+    return;
+
+  }
+
+  /*
+    まず現金から減らし、
+    足りない場合は口座から減らす
+  */
+
+  let remaining = amount;
+
+  if (settings.cash >= remaining) {
+
+    settings.cash -= remaining;
+
+    remaining = 0;
+
+  } else {
+
+    remaining -= settings.cash;
+
+    settings.cash = 0;
+
+  }
+
+  if (remaining > 0) {
+
+    settings.bank -= remaining;
+
+  }
+
+  settings.suica =
+    Number(settings.suica || 0) + amount;
 
   transactions.push({
 
@@ -1043,11 +1369,18 @@ function chargeSuica() {
 
   });
 
-  settings.suica += amount;
-
   saveData();
 
   document.getElementById("chargeAmount").value = "";
+
+  document.getElementById("bankInput").value =
+    settings.bank;
+
+  document.getElementById("cashInput").value =
+    settings.cash;
+
+  document.getElementById("suicaInput").value =
+    settings.suica;
 
   renderAll();
 
@@ -1060,36 +1393,35 @@ function chargeSuica() {
 
 function calculateAssets() {
 
-  let income = 0;
+  const bank =
+    Number(settings.bank || 0);
 
-  let expense = 0;
+  const cash =
+    Number(settings.cash || 0);
 
-  transactions.forEach(t => {
+  const savings =
+    Number(settings.savings || 0);
 
-    if (t.type === "income") {
+  const suica =
+    Number(settings.suica || 0);
 
-      income += Number(t.amount);
-
-    } else {
-
-      expense += Number(t.amount);
-
-    }
-
-  });
-
-  /*
-    総資産 = 収入 - 支出 + 初期貯金
-  */
+  const usable =
+    bank + cash;
 
   const total =
-    income - expense + Number(settings.savings || 0);
+    usable + savings + suica;
 
   return {
 
-    income,
+    bank,
 
-    expense,
+    cash,
+
+    savings,
+
+    suica,
+
+    usable,
 
     total
 
@@ -1106,9 +1438,11 @@ function getMonthData() {
 
   const now = new Date();
 
-  const year = now.getFullYear();
+  const year =
+    now.getFullYear();
 
-  const month = now.getMonth();
+  const month =
+    now.getMonth();
 
   let income = 0;
 
@@ -1180,41 +1514,41 @@ function renderSummary() {
   const month =
     getMonthData();
 
-  const saving =
-    Number(settings.savings || 0);
-
-  const usable =
-    assets.total - saving - Number(settings.suica || 0);
-
   document.getElementById("totalAsset")
-    .textContent = yen(
-      assets.total
-    );
-
-  document.getElementById("savingMoney")
-    .textContent = yen(
-      saving
-    );
+    .textContent =
+      yen(assets.total);
 
   document.getElementById("usableMoney")
-    .textContent = yen(
-      usable
-    );
+    .textContent =
+      yen(assets.usable);
+
+  document.getElementById("bankMoney")
+    .textContent =
+      yen(assets.bank);
+
+  document.getElementById("cashMoney")
+    .textContent =
+      yen(assets.cash);
+
+  document.getElementById("savingMoney")
+    .textContent =
+      yen(assets.savings);
 
   document.getElementById("suicaBalance")
-    .textContent = yen(
-      settings.suica
-    );
+    .textContent =
+      yen(assets.suica);
 
   document.getElementById("monthIncome")
-    .textContent = yen(
-      month.income
-    );
+    .textContent =
+      yen(month.income);
 
   document.getElementById("monthExpense")
-    .textContent = yen(
-      month.expense
-    );
+    .textContent =
+      yen(month.expense);
+
+  document.getElementById("assetUsablePreview")
+    .textContent =
+      yen(assets.usable);
 
 }
 
@@ -1233,7 +1567,10 @@ function renderGoal() {
 
   const progress =
     goal > 0
-      ? Math.min(100, saving / goal * 100)
+      ? Math.min(
+          100,
+          saving / goal * 100
+        )
       : 0;
 
   document.getElementById("goalProgress")
@@ -1275,7 +1612,8 @@ function renderSalary() {
       : "給料設定はまだありません。";
 
   document.getElementById("salaryInfo")
-    .textContent = text;
+    .textContent =
+      text;
 
 }
 
@@ -1287,12 +1625,16 @@ function renderSalary() {
 function renderTransactions() {
 
   const list =
-    document.getElementById("transactionList");
+    document.getElementById(
+      "transactionList"
+    );
 
   if (transactions.length === 0) {
 
     list.innerHTML =
-      `<div class="empty">まだ記録がありません。</div>`;
+      `<div class="empty">
+        まだ記録がありません。
+      </div>`;
 
     return;
 
@@ -1301,7 +1643,8 @@ function renderTransactions() {
   const sorted =
     [...transactions].sort(
       (a,b) =>
-        new Date(b.date) - new Date(a.date)
+        new Date(b.date) -
+        new Date(a.date)
     );
 
   list.innerHTML =
@@ -1329,7 +1672,12 @@ function renderTransactions() {
 
             <div class="transaction-info">
               ${t.date}
-              ${t.memo ? "・" + escapeHTML(t.memo) : ""}
+              ${
+                t.memo
+                  ? "・" +
+                    escapeHTML(t.memo)
+                  : ""
+              }
             </div>
 
           </div>
@@ -1364,7 +1712,8 @@ function renderTransactions() {
 function changeMonth(diff) {
 
   currentCalendarDate.setMonth(
-    currentCalendarDate.getMonth() + diff
+    currentCalendarDate.getMonth() +
+    diff
   );
 
   renderCalendar();
@@ -1375,7 +1724,9 @@ function changeMonth(diff) {
 function renderCalendar() {
 
   const container =
-    document.getElementById("calendarDays");
+    document.getElementById(
+      "calendarDays"
+    );
 
   const year =
     currentCalendarDate.getFullYear();
@@ -1383,19 +1734,32 @@ function renderCalendar() {
   const month =
     currentCalendarDate.getMonth();
 
-  document.getElementById("calendarTitle")
-    .textContent =
-      `${year}年${month + 1}月`;
+  document.getElementById(
+    "calendarTitle"
+  ).textContent =
+    `${year}年${month + 1}月`;
 
   const firstDay =
-    new Date(year, month, 1).getDay();
+    new Date(
+      year,
+      month,
+      1
+    ).getDay();
 
   const lastDate =
-    new Date(year, month + 1, 0).getDate();
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
 
   let html = "";
 
-  for (let i = 0; i < firstDay; i++) {
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
 
     html += `<div></div>`;
 
@@ -1404,7 +1768,11 @@ function renderCalendar() {
   const today =
     formatDate(new Date());
 
-  for (let day = 1; day <= lastDate; day++) {
+  for (
+    let day = 1;
+    day <= lastDate;
+    day++
+  ) {
 
     const date =
       `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
@@ -1458,13 +1826,17 @@ function renderCalendar() {
 
         ${
           income
-            ? `<div class="day-income">+${formatShort(income)}</div>`
+            ? `<div class="day-income">
+                +${formatShort(income)}
+              </div>`
             : ""
         }
 
         ${
           expense
-            ? `<div class="day-expense">-${formatShort(expense)}</div>`
+            ? `<div class="day-expense">
+                -${formatShort(expense)}
+              </div>`
             : ""
         }
 
@@ -1502,7 +1874,10 @@ function selectDate(date) {
   if (list.length === 0) {
 
     target.innerHTML =
-      `<div class="empty">${date}<br>この日の記録はありません。</div>`;
+      `<div class="empty">
+        ${date}<br>
+        この日の記録はありません。
+      </div>`;
 
     return;
 
@@ -1510,7 +1885,8 @@ function selectDate(date) {
 
   target.innerHTML = `
 
-    <div style="margin-top:15px;font-weight:bold;">
+    <div
+      style="margin-top:15px;font-weight:bold;">
       ${date} の記録
     </div>
 
@@ -1519,6 +1895,7 @@ function selectDate(date) {
       <div class="transaction">
 
         <div>
+
           <strong>
             ${escapeHTML(t.category)}
           </strong>
@@ -1526,6 +1903,7 @@ function selectDate(date) {
           <div class="transaction-info">
             ${escapeHTML(t.memo || "")}
           </div>
+
         </div>
 
         <div>
@@ -1536,7 +1914,11 @@ function selectDate(date) {
               : "amount-expense"
           }">
 
-            ${t.type === "income" ? "+" : "-"}${yen(t.amount)}
+            ${
+              t.type === "income"
+                ? "+"
+                : "-"
+            }${yen(t.amount)}
 
           </div>
 
@@ -1591,14 +1973,20 @@ function drawChart() {
   const chartHeight = 180;
 
   const incomeHeight =
-    month.income / max * chartHeight;
+    month.income /
+    max *
+    chartHeight;
 
   const expenseHeight =
-    month.expense / max * chartHeight;
+    month.expense /
+    max *
+    chartHeight;
 
-  ctx.font = "16px sans-serif";
+  ctx.font =
+    "16px sans-serif";
 
-  ctx.fillStyle = "#111";
+  ctx.fillStyle =
+    "#111";
 
   ctx.fillText(
     "収入",
@@ -1615,25 +2003,31 @@ function drawChart() {
   ctx.fillText(
     yen(month.income),
     100,
-    baseY - incomeHeight - 10
+    baseY -
+      incomeHeight -
+      10
   );
 
   ctx.fillText(
     yen(month.expense),
     380,
-    baseY - expenseHeight - 10
+    baseY -
+      expenseHeight -
+      10
   );
 
   ctx.fillRect(
     80,
-    baseY - incomeHeight,
+    baseY -
+      incomeHeight,
     120,
     incomeHeight
   );
 
   ctx.fillRect(
     360,
-    baseY - expenseHeight,
+    baseY -
+      expenseHeight,
     120,
     expenseHeight
   );
@@ -1658,8 +2052,10 @@ function backupData() {
   const text =
     JSON.stringify(data);
 
-  document.getElementById("backupText")
-    .value = text;
+  document.getElementById(
+    "backupText"
+  ).value =
+    text;
 
   alert(
     "バックアップデータを表示しました。コピーして保存してください。"
@@ -1675,12 +2071,16 @@ function backupData() {
 function restoreData() {
 
   const text =
-    document.getElementById("backupText")
-      .value.trim();
+    document.getElementById(
+      "backupText"
+    ).value.trim();
 
   if (!text) {
 
-    alert("バックアップデータを貼り付けてください。");
+    alert(
+      "バックアップデータを貼り付けてください。"
+    );
+
     return;
 
   }
@@ -1691,7 +2091,9 @@ function restoreData() {
       JSON.parse(text);
 
     if (
-      !Array.isArray(data.transactions) ||
+      !Array.isArray(
+        data.transactions
+      ) ||
       !data.settings
     ) {
 
@@ -1702,14 +2104,57 @@ function restoreData() {
     transactions =
       data.transactions;
 
-    settings =
-      data.settings;
+    settings = {
+
+      bank:
+        Number(data.settings.bank || 0),
+
+      cash:
+        Number(data.settings.cash || 0),
+
+      savings:
+        Number(data.settings.savings || 0),
+
+      goal:
+        Number(data.settings.goal || 0),
+
+      salaryDay:
+        data.settings.salaryDay || "",
+
+      salaryAmount:
+        Number(
+          data.settings.salaryAmount || 0
+        ),
+
+      suica:
+        Number(
+          data.settings.suica || 0
+        )
+
+    };
 
     saveData();
 
+    document.getElementById("bankInput").value =
+      settings.bank;
+
+    document.getElementById("cashInput").value =
+      settings.cash;
+
+    document.getElementById("savingsInput").value =
+      settings.savings;
+
+    document.getElementById("savingGoal").value =
+      settings.goal;
+
+    document.getElementById("suicaInput").value =
+      settings.suica;
+
     renderAll();
 
-    alert("データを復元しました。");
+    alert(
+      "データを復元しました。"
+    );
 
   } catch {
 
@@ -1730,11 +2175,16 @@ function formatShort(value) {
 
   if (value >= 10000) {
 
-    return Math.floor(value / 10000) + "万";
+    return (
+      Math.floor(value / 10000) +
+      "万"
+    );
 
   }
 
-  return value.toLocaleString("ja-JP");
+  return value.toLocaleString(
+    "ja-JP"
+  );
 
 }
 
@@ -1746,11 +2196,26 @@ function formatShort(value) {
 function escapeHTML(str) {
 
   return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
