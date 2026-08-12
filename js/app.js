@@ -33,12 +33,36 @@ function saveRecord(){
     const memo =
         document.getElementById("memo").value;
 
+    const dateInput =
+        document.getElementById("recordDate");
+
 
     if(!amount || amount <= 0){
 
         alert("金額を入力してください");
 
         return;
+
+    }
+
+
+    let recordDate;
+
+
+    if(dateInput && dateInput.value){
+
+        recordDate = dateInput.value;
+
+    }else{
+
+        const today = new Date();
+
+        recordDate =
+            today.getFullYear()
+            + "-"
+            + String(today.getMonth()+1).padStart(2,"0")
+            + "-"
+            + String(today.getDate()).padStart(2,"0");
 
     }
 
@@ -80,11 +104,10 @@ function saveRecord(){
         type,
         amount,
         category,
-        memo
+        memo,
+        recordDate
     );
 
-
-    // 画面更新
 
     updateDisplay();
 
@@ -94,8 +117,6 @@ function saveRecord(){
 
     updateChart();
 
-
-    // 入力欄を空にする
 
     document.getElementById("amount").value = "";
 
@@ -158,10 +179,9 @@ function goAnalysis(){
 
     document.getElementById("history").style.display = "none";
 
+    showRanking();
 
     updateChart();
-
-    showRanking();
 
 }
 
@@ -180,7 +200,6 @@ function goHistory(){
     document.getElementById("analysis").style.display = "none";
 
     document.getElementById("history").style.display = "block";
-
 
     showHistory();
 
