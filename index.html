@@ -1,249 +1,1760 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#ffffff">
-    
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pocket Manager</title>
 
-<title>俺の家計簿</title>
+<style>
+* {
+  box-sizing: border-box;
+}
 
-<link rel="stylesheet" href="css/style.css">
+body {
+  margin: 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Yu Gothic",
+    sans-serif;
+  background: #f4f6f8;
+  color: #222;
+}
 
+header {
+  background: #111827;
+  color: white;
+  padding: 22px 16px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 25px;
+}
+
+header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  opacity: .8;
+}
+
+.container {
+  width: min(100%, 900px);
+  margin: auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+
+.card h2 {
+  margin: 0 0 15px;
+  font-size: 19px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.summary-box {
+  padding: 15px;
+  border-radius: 13px;
+  background: #f3f4f6;
+}
+
+.summary-box span {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.summary-box strong {
+  font-size: 20px;
+}
+
+.balance {
+  background: #e8f5e9;
+}
+
+.savings {
+  background: #e3f2fd;
+}
+
+.income {
+  background: #fff8e1;
+}
+
+.expense {
+  background: #ffebee;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin: 12px 0 5px;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #555;
+}
+
+button {
+  border: none;
+  background: #111827;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+button.delete {
+  background: #ef4444;
+  width: auto;
+  padding: 7px 10px;
+  margin: 0;
+  font-size: 12px;
+}
+
+button.secondary {
+  background: #6b7280;
+}
+
+button.green {
+  background: #16a34a;
+}
+
+button.blue {
+  background: #2563eb;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.tabs button {
+  margin: 0;
+  background: #e5e7eb;
+  color: #333;
+}
+
+.tabs button.active {
+  background: #111827;
+  color: white;
+}
+
+.transaction {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.transaction-left {
+  min-width: 0;
+}
+
+.transaction-title {
+  font-weight: bold;
+}
+
+.transaction-info {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.amount-income {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.amount-expense {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calendar-header button {
+  width: auto;
+  padding: 8px 13px;
+  margin: 0;
+}
+
+.calendar-title {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  color: #777;
+  padding: 5px 0;
+}
+
+.day {
+  min-height: 65px;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  position: relative;
+}
+
+.day:hover {
+  background: #eef2ff;
+}
+
+.day.today {
+  border: 2px solid #111827;
+}
+
+.day.selected {
+  background: #e0e7ff;
+}
+
+.day-number {
+  font-weight: bold;
+}
+
+.day-income {
+  color: #16a34a;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.day-expense {
+  color: #dc2626;
+  font-size: 10px;
+}
+
+.progress {
+  height: 15px;
+  background: #e5e7eb;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #2563eb;
+  width: 0%;
+  transition: width .3s;
+}
+
+.goal-text {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+canvas {
+  width: 100% !important;
+  max-height: 300px;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+.small {
+  font-size: 12px;
+  color: #777;
+}
+
+.danger-zone {
+  border: 1px solid #fecaca;
+  background: #fff7f7;
+}
+
+@media (max-width: 600px) {
+  .summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .day {
+    min-height: 58px;
+  }
+}
+</style>
 </head>
 
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./service-worker.js");
-  }
-</script>
 <body>
 
+<header>
+  <h1>💰 Pocket Manager</h1>
+  <p>かんたん家計簿</p>
+</header>
 
-<h1>💰 俺の家計簿</h1>
+<div class="container">
+
+  <!-- 総資産 -->
+  <div class="card">
+    <h2>💰 現在の資産</h2>
+
+    <div class="summary">
+
+      <div class="summary-box balance">
+        <span>総資産</span>
+        <strong id="totalAsset">¥0</strong>
+      </div>
+
+      <div class="summary-box">
+        <span>普通に使うお金</span>
+        <strong id="usableMoney">¥0</strong>
+      </div>
+
+      <div class="summary-box savings">
+        <span>貯金</span>
+        <strong id="savingMoney">¥0</strong>
+      </div>
+
+      <div class="summary-box">
+        <span>Suica残高</span>
+        <strong id="suicaBalance">¥0</strong>
+      </div>
+
+      <div class="summary-box income">
+        <span>今月の収入</span>
+        <strong id="monthIncome">¥0</strong>
+      </div>
+
+      <div class="summary-box expense">
+        <span>今月の支出</span>
+        <strong id="monthExpense">¥0</strong>
+      </div>
+
+    </div>
+  </div>
 
 
-<!-- ホーム -->
+  <!-- 貯金目標 -->
+  <div class="card">
+    <h2>🎯 貯金目標</h2>
 
-<section id="home">
+    <label>目標金額</label>
+    <input id="savingGoal" type="number" placeholder="例：100000">
+
+    <button onclick="saveGoal()">目標を保存</button>
+
+    <div class="progress">
+      <div class="progress-bar" id="goalProgress"></div>
+    </div>
+
+    <div class="goal-text" id="goalText">
+      目標未設定
+    </div>
+  </div>
 
 
-<div class="card main-card">
+  <!-- 入力 -->
+  <div class="card">
 
-<h2>💎 総資産</h2>
+    <h2>➕ お金を登録</h2>
 
-<p id="total">
-0円
-</p>
+    <div class="tabs">
+      <button id="incomeTab" class="active" onclick="switchType('income')">
+        収入
+      </button>
+
+      <button id="expenseTab" onclick="switchType('expense')">
+        支出
+      </button>
+    </div>
+
+    <div class="form-grid">
+
+      <div>
+        <label>日付</label>
+        <input id="date" type="date">
+      </div>
+
+      <div>
+        <label>金額</label>
+        <input id="amount" type="number" placeholder="例：5000">
+      </div>
+
+    </div>
+
+    <label>カテゴリ</label>
+
+    <select id="category">
+    </select>
+
+    <label>メモ</label>
+
+    <input id="memo" type="text" placeholder="例：サイゼ給料">
+
+    <button onclick="addTransaction()">
+      登録する
+    </button>
+
+  </div>
+
+
+  <!-- 給料・単発 -->
+  <div class="card">
+
+    <h2>💼 収入の管理</h2>
+
+    <div class="form-grid">
+
+      <div>
+        <label>給料日</label>
+        <input id="salaryDay" type="number" min="1" max="31" placeholder="例：25">
+      </div>
+
+      <div>
+        <label>通常の給料</label>
+        <input id="salaryAmount" type="number" placeholder="例：50000">
+      </div>
+
+    </div>
+
+    <button class="green" onclick="saveSalarySettings()">
+      給料設定を保存
+    </button>
+
+    <p class="small" id="salaryInfo"></p>
+
+    <hr>
+
+    <label>単発バイト収入</label>
+
+    <input id="singleAmount" type="number" placeholder="金額">
+
+    <input id="singleDate" type="date">
+
+    <button class="blue" onclick="addSingleIncome()">
+      単発バイトを登録
+    </button>
+
+  </div>
+
+
+  <!-- Suica -->
+  <div class="card">
+
+    <h2>🚃 Suica</h2>
+
+    <label>現在のSuica残高</label>
+
+    <input id="suicaInput" type="number" placeholder="例：3000">
+
+    <button onclick="saveSuica()">
+      Suica残高を保存
+    </button>
+
+    <label>Suicaへチャージ</label>
+
+    <input id="chargeAmount" type="number" placeholder="例：1000">
+
+    <button class="blue" onclick="chargeSuica()">
+      チャージする
+    </button>
+
+    <p class="small">
+      ※チャージした金額は「普通に使うお金」から減り、Suica残高に加算されます。
+    </p>
+
+  </div>
+
+
+  <!-- カレンダー -->
+  <div class="card">
+
+    <h2>📅 カレンダー</h2>
+
+    <div class="calendar-header">
+
+      <button onclick="changeMonth(-1)">
+        ←
+      </button>
+
+      <div class="calendar-title" id="calendarTitle"></div>
+
+      <button onclick="changeMonth(1)">
+        →
+      </button>
+
+    </div>
+
+    <div class="calendar">
+
+      <div class="weekday">日</div>
+      <div class="weekday">月</div>
+      <div class="weekday">火</div>
+      <div class="weekday">水</div>
+      <div class="weekday">木</div>
+      <div class="weekday">金</div>
+      <div class="weekday">土</div>
+
+    </div>
+
+    <div class="calendar" id="calendarDays"></div>
+
+    <div id="selectedDateTransactions"></div>
+
+  </div>
+
+
+  <!-- 履歴 -->
+  <div class="card">
+
+    <h2>📋 履歴</h2>
+
+    <div id="transactionList"></div>
+
+  </div>
+
+
+  <!-- 月間グラフ -->
+  <div class="card">
+
+    <h2>📊 今月の収支</h2>
+
+    <canvas id="chart" width="600" height="300"></canvas>
+
+  </div>
+
+
+  <!-- バックアップ -->
+  <div class="card">
+
+    <h2>💾 データ管理</h2>
+
+    <button class="blue" onclick="backupData()">
+      バックアップ
+    </button>
+
+    <label>バックアップデータを復元</label>
+
+    <textarea
+      id="backupText"
+      rows="6"
+      style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;"
+      placeholder="バックアップしたデータをここに貼り付け"
+    ></textarea>
+
+    <button class="green" onclick="restoreData()">
+      復元する
+    </button>
+
+  </div>
+
+
+  <!-- データ削除 -->
+  <div class="card danger-zone">
+
+    <h2>⚠️ データ管理</h2>
+
+    <p class="small">
+      家計簿のデータをすべて削除します。
+    </p>
+
+    <button class="delete" style="width:100%;padding:12px;" onclick="deleteAllData()">
+      すべてのデータを削除
+    </button>
+
+  </div>
 
 </div>
 
 
+<script>
 
-<div class="balance-container">
+/* =========================
+   データ
+========================= */
 
+let transactions =
+  JSON.parse(localStorage.getItem("pocketTransactions")) || [];
 
-<div class="card small-card">
+let settings =
+  JSON.parse(localStorage.getItem("pocketSettings")) || {
+    savings: 0,
+    goal: 0,
+    salaryDay: "",
+    salaryAmount: 0,
+    suica: 0
+  };
 
-<h2>💵 現金</h2>
+let currentType = "income";
 
-<p id="cash">
-0円
-</p>
+let currentCalendarDate = new Date();
 
-</div>
+let selectedDate = null;
 
 
+/* =========================
+   初期化
+========================= */
 
-<div class="card small-card">
+document.addEventListener("DOMContentLoaded", () => {
 
-<h2>🚉 Suica</h2>
+  const today = new Date();
 
-<p id="suica">
-0円
-</p>
+  document.getElementById("date").value =
+    formatDate(today);
 
-</div>
+  document.getElementById("singleDate").value =
+    formatDate(today);
 
+  document.getElementById("savingGoal").value =
+    settings.goal || "";
 
-</div>
+  document.getElementById("salaryDay").value =
+    settings.salaryDay || "";
 
+  document.getElementById("salaryAmount").value =
+    settings.salaryAmount || "";
 
+  updateCategory();
 
-<div class="card">
+  renderAll();
 
-<h2>📌 今月あと使える</h2>
+});
 
-<p id="limit">
-0円
-</p>
 
-</div>
+/* =========================
+   保存
+========================= */
 
+function saveData() {
 
-</section>
+  localStorage.setItem(
+    "pocketTransactions",
+    JSON.stringify(transactions)
+  );
 
+  localStorage.setItem(
+    "pocketSettings",
+    JSON.stringify(settings)
+  );
 
+}
 
-<!-- 記録 -->
 
-<section id="record">
+/* =========================
+   日付
+========================= */
 
+function formatDate(date) {
 
-<div class="card">
+  const y = date.getFullYear();
 
-<h2>📝 記録追加</h2>
+  const m = String(date.getMonth() + 1).padStart(2, "0");
 
+  const d = String(date.getDate()).padStart(2, "0");
 
-<select id="type">
+  return `${y}-${m}-${d}`;
 
-<option value="expense">
-💸 支出
-</option>
+}
 
-<option value="income">
-💴 収入
-</option>
 
-<option value="charge">
-🚉 Suicaチャージ
-</option>
+/* =========================
+   金額表示
+========================= */
 
-</select>
-<input
-    id="recordDate"
-    type="date"
->
+function yen(value) {
 
+  return "¥" +
+    Number(value || 0).toLocaleString("ja-JP");
 
-<input id="amount"
-type="number"
-placeholder="金額">
+}
 
 
+/* =========================
+   収入・支出切り替え
+========================= */
 
-<select id="category">
+function switchType(type) {
 
-<option>🍚 食費</option>
+  currentType = type;
 
-<option>👕 服</option>
+  document.getElementById("incomeTab")
+    .classList.toggle("active", type === "income");
 
-<option>🚃 交通費</option>
+  document.getElementById("expenseTab")
+    .classList.toggle("active", type === "expense");
 
-<option>🎮 遊び</option>
+  updateCategory();
 
-<option>💈 美容</option>
+}
 
-<option>📦 その他</option>
 
-</select>
+/* =========================
+   カテゴリ
+========================= */
 
+function updateCategory() {
 
+  const select =
+    document.getElementById("category");
 
-<input id="memo"
-placeholder="メモ">
+  if (currentType === "income") {
 
+    select.innerHTML = `
+      <option value="給料">給料</option>
+      <option value="単発バイト">単発バイト</option>
+      <option value="お小遣い">お小遣い</option>
+      <option value="その他収入">その他収入</option>
+    `;
 
+  } else {
 
-<button onclick="saveRecord()">
-保存
-</button>
+    select.innerHTML = `
+      <option value="食費">食費</option>
+      <option value="交通費">交通費</option>
+      <option value="買い物">買い物</option>
+      <option value="遊び">遊び</option>
+      <option value="学校">学校</option>
+      <option value="その他支出">その他支出</option>
+    `;
 
+  }
 
-</div>
+}
 
 
-</section>
+/* =========================
+   取引追加
+========================= */
 
+function addTransaction() {
 
+  const date =
+    document.getElementById("date").value;
 
-<!-- 分析 -->
+  const amount =
+    Number(document.getElementById("amount").value);
 
-<section id="analysis">
+  const category =
+    document.getElementById("category").value;
 
+  const memo =
+    document.getElementById("memo").value.trim();
 
-<div class="card">
+  if (!date) {
 
-<h2>📊 分析</h2>
+    alert("日付を入力してください。");
+    return;
 
-<div id="ranking"></div>
-<canvas id="expenseChart"></canvas>
-</div>
+  }
 
+  if (!amount || amount <= 0) {
 
-</section>
+    alert("金額を入力してください。");
+    return;
 
+  }
 
+  transactions.push({
 
-<!-- 履歴 -->
+    id: Date.now(),
 
-<section id="history">
+    date,
 
+    amount,
 
-<div class="card">
+    type: currentType,
 
-<h2>📋 履歴</h2>
+    category,
 
+    memo
 
-<input id="searchInput"
-placeholder="履歴検索">
+  });
 
+  saveData();
 
-<p id="searchTotal"></p>
+  document.getElementById("amount").value = "";
 
+  document.getElementById("memo").value = "";
 
-<div id="historyList"></div>
+  renderAll();
 
+}
 
-</div>
 
+/* =========================
+   単発バイト
+========================= */
 
-</section>
+function addSingleIncome() {
 
+  const amount =
+    Number(document.getElementById("singleAmount").value);
 
+  const date =
+    document.getElementById("singleDate").value;
 
-<!-- 下メニュー -->
+  if (!amount || amount <= 0) {
 
-<nav class="bottom-nav">
+    alert("金額を入力してください。");
+    return;
 
+  }
 
-<button onclick="goHome()">
-🏠
-</button>
+  transactions.push({
 
+    id: Date.now(),
 
-<button onclick="goRecord()">
-➕
-</button>
+    date,
 
+    amount,
 
-<button onclick="goAnalysis()">
-📊
-</button>
+    type: "income",
 
+    category: "単発バイト",
 
-<button onclick="goHistory()">
-📋
-</button>
+    memo: "単発バイト"
 
+  });
 
-</nav>
+  saveData();
 
+  document.getElementById("singleAmount").value = "";
 
+  renderAll();
 
-<script src="js/data.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/finance.js"></script>
-<script src="js/history.js"></script>
-<script src="js/analysis.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="js/chart.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/app.js"></script>
+}
 
+
+/* =========================
+   削除
+========================= */
+
+function deleteTransaction(id) {
+
+  const target =
+    transactions.find(t => t.id === id);
+
+  if (!target) return;
+
+  if (!confirm(
+    `${yen(target.amount)}の記録を削除しますか？`
+  )) {
+
+    return;
+
+  }
+
+  transactions =
+    transactions.filter(t => t.id !== id);
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   全削除
+========================= */
+
+function deleteAllData() {
+
+  if (!confirm(
+    "本当にすべての家計簿データを削除しますか？"
+  )) {
+
+    return;
+
+  }
+
+  transactions = [];
+
+  settings = {
+
+    savings: 0,
+
+    goal: 0,
+
+    salaryDay: "",
+
+    salaryAmount: 0,
+
+    suica: 0
+
+  };
+
+  saveData();
+
+  renderAll();
+
+  alert("すべてのデータを削除しました。");
+
+}
+
+
+/* =========================
+   貯金目標
+========================= */
+
+function saveGoal() {
+
+  const goal =
+    Number(document.getElementById("savingGoal").value);
+
+  if (goal < 0) return;
+
+  settings.goal = goal;
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   給料設定
+========================= */
+
+function saveSalarySettings() {
+
+  settings.salaryDay =
+    Number(document.getElementById("salaryDay").value);
+
+  settings.salaryAmount =
+    Number(document.getElementById("salaryAmount").value);
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   Suica
+========================= */
+
+function saveSuica() {
+
+  const value =
+    Number(document.getElementById("suicaInput").value);
+
+  if (value < 0) return;
+
+  settings.suica = value;
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+/* =========================
+   Suicaチャージ
+========================= */
+
+function chargeSuica() {
+
+  const amount =
+    Number(document.getElementById("chargeAmount").value);
+
+  if (!amount || amount <= 0) {
+
+    alert("チャージ金額を入力してください。");
+    return;
+
+  }
+
+  /*
+    Suicaチャージは支出として扱う。
+    ただし「Suica残高」に同額を追加する。
+  */
+
+  transactions.push({
+
+    id: Date.now(),
+
+    date: formatDate(new Date()),
+
+    amount,
+
+    type: "expense",
+
+    category: "Suicaチャージ",
+
+    memo: "Suicaチャージ"
+
+  });
+
+  settings.suica += amount;
+
+  saveData();
+
+  document.getElementById("chargeAmount").value = "";
+
+  renderAll();
+
+}
+
+
+/* =========================
+   総資産計算
+========================= */
+
+function calculateAssets() {
+
+  let income = 0;
+
+  let expense = 0;
+
+  transactions.forEach(t => {
+
+    if (t.type === "income") {
+
+      income += Number(t.amount);
+
+    } else {
+
+      expense += Number(t.amount);
+
+    }
+
+  });
+
+  /*
+    総資産 = 収入 - 支出 + 初期貯金
+  */
+
+  const total =
+    income - expense + Number(settings.savings || 0);
+
+  return {
+
+    income,
+
+    expense,
+
+    total
+
+  };
+
+}
+
+
+/* =========================
+   今月計算
+========================= */
+
+function getMonthData() {
+
+  const now = new Date();
+
+  const year = now.getFullYear();
+
+  const month = now.getMonth();
+
+  let income = 0;
+
+  let expense = 0;
+
+  transactions.forEach(t => {
+
+    const d = new Date(t.date);
+
+    if (
+      d.getFullYear() === year &&
+      d.getMonth() === month
+    ) {
+
+      if (t.type === "income") {
+
+        income += Number(t.amount);
+
+      } else {
+
+        expense += Number(t.amount);
+
+      }
+
+    }
+
+  });
+
+  return {
+    income,
+    expense
+  };
+
+}
+
+
+/* =========================
+   画面更新
+========================= */
+
+function renderAll() {
+
+  saveData();
+
+  renderSummary();
+
+  renderTransactions();
+
+  renderCalendar();
+
+  renderGoal();
+
+  renderSalary();
+
+  drawChart();
+
+}
+
+
+/* =========================
+   サマリー
+========================= */
+
+function renderSummary() {
+
+  const assets =
+    calculateAssets();
+
+  const month =
+    getMonthData();
+
+  const saving =
+    Number(settings.savings || 0);
+
+  const usable =
+    assets.total - saving - Number(settings.suica || 0);
+
+  document.getElementById("totalAsset")
+    .textContent = yen(
+      assets.total
+    );
+
+  document.getElementById("savingMoney")
+    .textContent = yen(
+      saving
+    );
+
+  document.getElementById("usableMoney")
+    .textContent = yen(
+      usable
+    );
+
+  document.getElementById("suicaBalance")
+    .textContent = yen(
+      settings.suica
+    );
+
+  document.getElementById("monthIncome")
+    .textContent = yen(
+      month.income
+    );
+
+  document.getElementById("monthExpense")
+    .textContent = yen(
+      month.expense
+    );
+
+}
+
+
+/* =========================
+   貯金目標
+========================= */
+
+function renderGoal() {
+
+  const goal =
+    Number(settings.goal || 0);
+
+  const saving =
+    Number(settings.savings || 0);
+
+  const progress =
+    goal > 0
+      ? Math.min(100, saving / goal * 100)
+      : 0;
+
+  document.getElementById("goalProgress")
+    .style.width =
+      progress + "%";
+
+  if (goal > 0) {
+
+    document.getElementById("goalText")
+      .textContent =
+        `${yen(saving)} / ${yen(goal)} (${Math.round(progress)}%)`;
+
+  } else {
+
+    document.getElementById("goalText")
+      .textContent =
+        "目標未設定";
+
+  }
+
+}
+
+
+/* =========================
+   給料表示
+========================= */
+
+function renderSalary() {
+
+  const day =
+    settings.salaryDay;
+
+  const amount =
+    settings.salaryAmount;
+
+  const text =
+    day && amount
+      ? `毎月${day}日ごろ：${yen(amount)}`
+      : "給料設定はまだありません。";
+
+  document.getElementById("salaryInfo")
+    .textContent = text;
+
+}
+
+
+/* =========================
+   履歴
+========================= */
+
+function renderTransactions() {
+
+  const list =
+    document.getElementById("transactionList");
+
+  if (transactions.length === 0) {
+
+    list.innerHTML =
+      `<div class="empty">まだ記録がありません。</div>`;
+
+    return;
+
+  }
+
+  const sorted =
+    [...transactions].sort(
+      (a,b) =>
+        new Date(b.date) - new Date(a.date)
+    );
+
+  list.innerHTML =
+    sorted.map(t => {
+
+      const sign =
+        t.type === "income"
+          ? "+"
+          : "-";
+
+      const amountClass =
+        t.type === "income"
+          ? "amount-income"
+          : "amount-expense";
+
+      return `
+
+        <div class="transaction">
+
+          <div class="transaction-left">
+
+            <div class="transaction-title">
+              ${escapeHTML(t.category)}
+            </div>
+
+            <div class="transaction-info">
+              ${t.date}
+              ${t.memo ? "・" + escapeHTML(t.memo) : ""}
+            </div>
+
+          </div>
+
+          <div style="text-align:right">
+
+            <div class="${amountClass}">
+              ${sign}${yen(t.amount)}
+            </div>
+
+            <button
+              class="delete"
+              onclick="deleteTransaction(${t.id})">
+              削除
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================
+   カレンダー
+========================= */
+
+function changeMonth(diff) {
+
+  currentCalendarDate.setMonth(
+    currentCalendarDate.getMonth() + diff
+  );
+
+  renderCalendar();
+
+}
+
+
+function renderCalendar() {
+
+  const container =
+    document.getElementById("calendarDays");
+
+  const year =
+    currentCalendarDate.getFullYear();
+
+  const month =
+    currentCalendarDate.getMonth();
+
+  document.getElementById("calendarTitle")
+    .textContent =
+      `${year}年${month + 1}月`;
+
+  const firstDay =
+    new Date(year, month, 1).getDay();
+
+  const lastDate =
+    new Date(year, month + 1, 0).getDate();
+
+  let html = "";
+
+  for (let i = 0; i < firstDay; i++) {
+
+    html += `<div></div>`;
+
+  }
+
+  const today =
+    formatDate(new Date());
+
+  for (let day = 1; day <= lastDate; day++) {
+
+    const date =
+      `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+    const dayTransactions =
+      transactions.filter(
+        t => t.date === date
+      );
+
+    let income = 0;
+
+    let expense = 0;
+
+    dayTransactions.forEach(t => {
+
+      if (t.type === "income") {
+
+        income += Number(t.amount);
+
+      } else {
+
+        expense += Number(t.amount);
+
+      }
+
+    });
+
+    let classes = "day";
+
+    if (date === today) {
+
+      classes += " today";
+
+    }
+
+    if (date === selectedDate) {
+
+      classes += " selected";
+
+    }
+
+    html += `
+
+      <div
+        class="${classes}"
+        onclick="selectDate('${date}')">
+
+        <div class="day-number">
+          ${day}
+        </div>
+
+        ${
+          income
+            ? `<div class="day-income">+${formatShort(income)}</div>`
+            : ""
+        }
+
+        ${
+          expense
+            ? `<div class="day-expense">-${formatShort(expense)}</div>`
+            : ""
+        }
+
+      </div>
+
+    `;
+
+  }
+
+  container.innerHTML = html;
+
+}
+
+
+/* =========================
+   カレンダーの日付選択
+========================= */
+
+function selectDate(date) {
+
+  selectedDate = date;
+
+  renderCalendar();
+
+  const target =
+    document.getElementById(
+      "selectedDateTransactions"
+    );
+
+  const list =
+    transactions.filter(
+      t => t.date === date
+    );
+
+  if (list.length === 0) {
+
+    target.innerHTML =
+      `<div class="empty">${date}<br>この日の記録はありません。</div>`;
+
+    return;
+
+  }
+
+  target.innerHTML = `
+
+    <div style="margin-top:15px;font-weight:bold;">
+      ${date} の記録
+    </div>
+
+    ${list.map(t => `
+
+      <div class="transaction">
+
+        <div>
+          <strong>
+            ${escapeHTML(t.category)}
+          </strong>
+
+          <div class="transaction-info">
+            ${escapeHTML(t.memo || "")}
+          </div>
+        </div>
+
+        <div>
+
+          <div class="${
+            t.type === "income"
+              ? "amount-income"
+              : "amount-expense"
+          }">
+
+            ${t.type === "income" ? "+" : "-"}${yen(t.amount)}
+
+          </div>
+
+          <button
+            class="delete"
+            onclick="deleteTransaction(${t.id})">
+            削除
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("")}
+
+  `;
+
+}
+
+
+/* =========================
+   グラフ
+========================= */
+
+function drawChart() {
+
+  const canvas =
+    document.getElementById("chart");
+
+  const ctx =
+    canvas.getContext("2d");
+
+  const month =
+    getMonthData();
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  const max =
+    Math.max(
+      month.income,
+      month.expense,
+      1
+    );
+
+  const baseY = 240;
+
+  const chartHeight = 180;
+
+  const incomeHeight =
+    month.income / max * chartHeight;
+
+  const expenseHeight =
+    month.expense / max * chartHeight;
+
+  ctx.font = "16px sans-serif";
+
+  ctx.fillStyle = "#111";
+
+  ctx.fillText(
+    "収入",
+    120,
+    275
+  );
+
+  ctx.fillText(
+    "支出",
+    400,
+    275
+  );
+
+  ctx.fillText(
+    yen(month.income),
+    100,
+    baseY - incomeHeight - 10
+  );
+
+  ctx.fillText(
+    yen(month.expense),
+    380,
+    baseY - expenseHeight - 10
+  );
+
+  ctx.fillRect(
+    80,
+    baseY - incomeHeight,
+    120,
+    incomeHeight
+  );
+
+  ctx.fillRect(
+    360,
+    baseY - expenseHeight,
+    120,
+    expenseHeight
+  );
+
+}
+
+
+/* =========================
+   バックアップ
+========================= */
+
+function backupData() {
+
+  const data = {
+
+    transactions,
+
+    settings
+
+  };
+
+  const text =
+    JSON.stringify(data);
+
+  document.getElementById("backupText")
+    .value = text;
+
+  alert(
+    "バックアップデータを表示しました。コピーして保存してください。"
+  );
+
+}
+
+
+/* =========================
+   復元
+========================= */
+
+function restoreData() {
+
+  const text =
+    document.getElementById("backupText")
+      .value.trim();
+
+  if (!text) {
+
+    alert("バックアップデータを貼り付けてください。");
+    return;
+
+  }
+
+  try {
+
+    const data =
+      JSON.parse(text);
+
+    if (
+      !Array.isArray(data.transactions) ||
+      !data.settings
+    ) {
+
+      throw new Error();
+
+    }
+
+    transactions =
+      data.transactions;
+
+    settings =
+      data.settings;
+
+    saveData();
+
+    renderAll();
+
+    alert("データを復元しました。");
+
+  } catch {
+
+    alert(
+      "バックアップデータが正しくありません。"
+    );
+
+  }
+
+}
+
+
+/* =========================
+   短い金額
+========================= */
+
+function formatShort(value) {
+
+  if (value >= 10000) {
+
+    return Math.floor(value / 10000) + "万";
+
+  }
+
+  return value.toLocaleString("ja-JP");
+
+}
+
+
+/* =========================
+   HTML安全化
+========================= */
+
+function escapeHTML(str) {
+
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+</script>
 
 </body>
-
 </html>
